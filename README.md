@@ -1,10 +1,10 @@
 # 🔐 Better Auth - Next.js Authentication Starter
 
-A complete authentication system built with **Next.js 16**, **Better Auth**, and **MongoDB**. Features email/password authentication, OAuth providers (GitHub & Google), email verification, password reset, and protected routes.
+A complete authentication system built with **Next.js 16**, **Better Auth**, and **Neon**. Features email/password authentication, OAuth providers (GitHub & Google), email verification, password reset, and protected routes.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.0.3-black?style=flat-square&logo=next.js)
 ![Better Auth](https://img.shields.io/badge/Better_Auth-1.4.3-blue?style=flat-square)
-![MongoDB](https://img.shields.io/badge/MongoDB-7.0-green?style=flat-square&logo=mongodb)
+![Neon](https://img.shields.io/badge/Neon-PostgreSQL-green?style=flat-square&logo=postgresql)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
 
 ---
@@ -83,7 +83,7 @@ src/
 ### Prerequisites
 
 - Node.js 18+ 
-- MongoDB Atlas account (or local MongoDB)
+- Neon account (for PostgreSQL database)
 - Gmail account (for sending emails)
 - GitHub OAuth app (optional)
 - Google OAuth app (optional)
@@ -110,8 +110,8 @@ pnpm install
 Create a `.env` file in the root directory:
 
 ```env
-# MongoDB Connection
-MONGODB_URI="mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority"
+# Neon Database Connection
+DATABASE_URL="postgresql://<username>:<password>@<host>/<database>?sslmode=require"
 
 # Better Auth
 BETTER_AUTH_SECRET=your-secret-key-min-32-characters
@@ -133,13 +133,12 @@ GMAIL_APP_PASSWORD=your-app-password
 
 ### Step 4: Configure Services
 
-#### 🗄️ MongoDB Atlas Setup
+#### 🗄️ Neon Database Setup
 
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Create a new cluster (free tier available)
-3. Create a database user with read/write permissions
-4. Add your IP to the whitelist (or allow all: `0.0.0.0/0`)
-5. Get the connection string and add to `.env`
+1. Go to [Neon Console](https://console.neon.tech/)
+2. Create a new project
+3. Create a database
+4. Copy the connection string and add to `.env` as `DATABASE_URL`
 
 #### 📧 Gmail SMTP Setup
 
@@ -257,7 +256,8 @@ socialProviders: {
 |------------|---------|
 | [Next.js 16](https://nextjs.org/) | React framework with App Router |
 | [Better Auth](https://better-auth.com/) | Authentication library |
-| [MongoDB](https://www.mongodb.com/) | Database |
+| [Neon](https://neon.tech/) | PostgreSQL database |
+| [Drizzle ORM](https://orm.drizzle.team/) | Database ORM |
 | [React Hook Form](https://react-hook-form.com/) | Form validation |
 | [Tailwind CSS](https://tailwindcss.com/) | Styling |
 | [shadcn/ui](https://ui.shadcn.com/) | UI components |
@@ -306,7 +306,8 @@ Update OAuth callback URLs in GitHub/Google to:
 
 - [Better Auth Documentation](https://better-auth.com/docs)
 - [Next.js Documentation](https://nextjs.org/docs)
-- [MongoDB Atlas Documentation](https://www.mongodb.com/docs/atlas/)
+- [Neon Documentation](https://neon.tech/docs/)
+- [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview)
 
 ---
 

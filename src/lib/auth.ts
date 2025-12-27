@@ -1,17 +1,14 @@
 import { betterAuth } from "better-auth";
-import { MongoClient } from "mongodb";
-import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { and, eq } from "drizzle-orm";
+
 import { sendEmailVerification } from "../services/SendEmail";
 import { sendPasswordResetEmail } from "../services/SendPasswordResetEmail";
-
-const client = new MongoClient(process.env.MONGODB_URI!, {
-  tls: true,
-  tlsAllowInvalidCertificates: false,
-});
-await client.connect();
-const db = client.db();
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "../drizzle/db";
+import * as schema from "../drizzle/schema";
 
 export const auth = betterAuth({
+  experimental: { joins: true },
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
       void sendEmailVerification(user.email, user.name, url);
@@ -37,8 +34,10 @@ export const auth = betterAuth({
       void sendPasswordResetEmail(user.email, user.name, url);
     },
   },
-
-  database: mongodbAdapter(db),
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema: schema,
+  }),
 
   account: {
     accountLinking: {
@@ -53,21 +52,28 @@ export const auth = betterAuth({
       create: {
         before: async (user) => {
           // Check if there's an existing unverified user with this email
-          const existingUser = await db.collection("user").findOne({
-            email: user.email,
-            emailVerified: false,
-          });
+          const existingUser = await db
+            .select()
+            .from(schema.user)
+            .where(
+              and(
+                eq(schema.user.email, user.email),
+                eq(schema.user.emailVerified, false)
+              )
+            )
+            .limit(1);
 
-          if (existingUser) {
+          if (existingUser.length > 0) {
+            const userId = existingUser[0].id;
             // Delete the unverified account so the new user can register
-            await db.collection("user").deleteOne({ _id: existingUser._id });
+            await db.delete(schema.user).where(eq(schema.user.id, userId));
             // Also delete any associated sessions and accounts
             await db
-              .collection("session")
-              .deleteMany({ userId: existingUser._id.toString() });
+              .delete(schema.session)
+              .where(eq(schema.session.userId, userId));
             await db
-              .collection("account")
-              .deleteMany({ userId: existingUser._id.toString() });
+              .delete(schema.account)
+              .where(eq(schema.account.userId, userId));
           }
 
           // Return the user data wrapped in { data: user }
