@@ -166,7 +166,33 @@ GMAIL_APP_PASSWORD=your-app-password
 6. Add Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
 7. Copy Client ID and Client Secret to `.env`
 
-### Step 5: Run the Development Server
+### Step 5: Database Setup
+
+This project uses **Drizzle ORM** with **Neon PostgreSQL**. The database schema is defined in `src/drizzle/schema.ts`.
+
+#### Generate and Apply Database Migrations
+
+1. **Generate Migration Files:**
+   ```bash
+   npx drizzle-kit generate
+   ```
+   This creates SQL migration files in the `migrations/` folder based on your schema.
+
+2. **Apply Migrations to Database:**
+   ```bash
+   npx drizzle-kit migrate
+   ```
+   This runs the migration files against your Neon database to create the necessary tables.
+
+#### Database Tables Created
+
+The migration will create the following tables for Better Auth:
+- `user` - User accounts
+- `session` - User sessions
+- `account` - OAuth provider accounts
+- `verification` - Email verification tokens
+
+### Step 6: Run the Development Server
 
 ```bash
 npm run dev
@@ -250,7 +276,42 @@ socialProviders: {
 
 ---
 
-## 🛠️ Tech Stack
+## �️ Database Management
+
+### Drizzle Studio
+
+[Drizzle Studio](https://orm.drizzle.team/studio/overview) provides a web-based interface to view and edit your database.
+
+To open Drizzle Studio:
+
+```bash
+npx drizzle-kit studio
+```
+
+This will start a local server at `http://localhost:4983` where you can:
+- View table data
+- Run SQL queries
+- Edit records
+- Manage your database schema
+
+### Database Schema
+
+The database schema is defined in `src/drizzle/schema.ts`. Key tables include:
+
+- **user**: Stores user information (id, email, name, etc.)
+- **session**: Manages user sessions
+- **account**: Links OAuth accounts to users
+- **verification**: Handles email verification tokens
+
+### Making Schema Changes
+
+1. Edit `src/drizzle/schema.ts`
+2. Generate new migration: `npx drizzle-kit generate`
+3. Apply migration: `npx drizzle-kit migrate`
+
+---
+
+## �🛠️ Tech Stack
 
 | Technology | Purpose |
 |------------|---------|
@@ -270,10 +331,15 @@ socialProviders: {
 ## 📝 Scripts
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+
+# Database commands
+npx drizzle-kit generate  # Generate migration files
+npx drizzle-kit migrate   # Apply migrations to database
+npx drizzle-kit studio    # Open Drizzle Studio (database GUI)
 ```
 
 ---
