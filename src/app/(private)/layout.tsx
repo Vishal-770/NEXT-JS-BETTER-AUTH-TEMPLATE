@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/src/lib/auth-server";
+import Navbar from "@/src/components/Navbar";
 
 export default async function PrivateLayout({
   children,
@@ -12,5 +13,10 @@ export default async function PrivateLayout({
     redirect("/signin");
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  );
 }

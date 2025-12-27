@@ -37,19 +37,46 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between w-screen h-16 px-8 bg-background text-foreground">
-      <div className="flex items-center space-x-4">
-        <Link href="/">Home</Link>
-        <Link href="/dashboard">Dashboard</Link>
-        <Link href="/profile">Profile</Link>
+    <nav className="flex items-center justify-between w-full h-16 px-4 md:px-8 bg-background text-foreground border-b">
+      <div className="flex items-center space-x-6">
+        <Link
+          href="/"
+          className="text-xl font-bold hover:text-primary transition-colors"
+        >
+          BetterAuth
+        </Link>
+        <div className="hidden md:flex items-center space-x-4">
+          <Link
+            href="/"
+            className="text-sm hover:text-primary transition-colors"
+          >
+            Home
+          </Link>
+          {session && (
+            <>
+              <Link
+                href="/dashboard"
+                className="text-sm hover:text-primary transition-colors"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/profile"
+                className="text-sm hover:text-primary transition-colors"
+              >
+                Profile
+              </Link>
+            </>
+          )}
+        </div>
       </div>
       <div className="flex items-center space-x-4">
         {isPending ? (
           <span className="text-sm text-muted-foreground">Loading...</span>
         ) : session ? (
           <>
-            <span className="text-sm text-muted-foreground">
-              {session.user.name || session.user.email}
+            <span className="hidden md:inline text-sm text-muted-foreground">
+              Welcome, {session.user.name || session.user.email}
             </span>
             <Button
               variant="outline"
